@@ -40,8 +40,18 @@
                 <input asp-for="numeroDiPagine" class="form-control" />
                 <span asp-validation-for="numeroDiPagine" class="text-danger"></span>
             </div>
-            <button id="addAutore">Aggiungi Autore</button>
-            <div class="form-group" id="autoriGroup"></div>
+            <div class="form-group">
+                <label for="autoriPresenti">Scegli Autori tra quelli presenti nel DB(ctrl + click per selezione multipla)</label>
+                <select name="autoriPresenti" id="autoriPresenti" multiple>
+                    @foreach (var autore in ViewData["listaAutoriAll"] as List<Autore>)
+                    {
+                        <option value="@autore.AutoreId">@autore.Nome @autore.Cognome</option>
+                    }
+                </select>
+            </div>
+            <p class="my-3">Oppure</p>
+            <button id="addAutore" class="btn btn-primary">Aggiungi Autore</button>
+            <div class="form-group my-3" id="autoriGroup"></div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
             </div>
@@ -63,14 +73,14 @@
                 event.preventDefault();
 
                 const inputNameLabel = document.createElement("label");
-                inputNameLabel.innerText = "Nome"
+                inputNameLabel.innerText = "Nome autore da aggiungere nr. " + (i + 1);
                 const inputName = document.createElement("input");
                 inputName.name = "authorsNames-" + i;
                 inputName.type = "text";
                 inputName.classList = "mb-3 form-control";
 
                 const inputLastNameLabel = document.createElement("label");
-                inputLastNameLabel.innerText = "Cognome"
+                inputLastNameLabel.innerText = "Cognome autore da aggiungere nr. " + (i + 1);
                 const inputLastName = document.createElement("input");
                 inputLastName.name = "authorsLastNames-" + i;
                 inputLastName.type = "text";

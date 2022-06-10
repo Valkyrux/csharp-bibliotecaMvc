@@ -50,6 +50,7 @@ namespace Biblioteca_EntityFramework.Controllers
         // GET: Libroes/Create
         public IActionResult Create()
         {
+            ViewData["listaAutoriAll"] = _context.Autori.ToList<Autore>();
             return View();
         }
 
@@ -58,7 +59,7 @@ namespace Biblioteca_EntityFramework.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(/*[Bind("ID,Titolo,Data,stato,ISBN,numeroDiPagine,authorsNames,authorsLastNames")]*/ Libro libro)
+        public async Task<IActionResult> Create([Bind("ID,Titolo,Data,stato,ISBN,numeroDiPagine")] Libro libro)
         {
             for(int i = 0; i < 5; i++)
             {
@@ -75,6 +76,24 @@ namespace Biblioteca_EntityFramework.Controllers
                         libro.Autori = new List<Autore>();
                     }
                     libro.Autori.Add(autore);
+                }
+
+                Microsoft.Extensions.Primitives.StringValues stringaListaIDautoriPresenti;
+
+                if (Request.Form.TryGetValue("autoriPresenti", out stringaListaIDautoriPresenti))
+                {
+                    string[] arrayIDautoriPresenti = stringaListaIDautoriPresenti.ToArray();
+                    
+                    foreach(string strId in arrayIDautoriPresenti)
+                    {
+                        long id;
+                        if(long.TryParse(strId, out id))
+                        {
+                            Autore? autore = _context.Autori.Find(id);
+                            if(autore != null)
+                                libro.Autori.Add(autore);
+                        }
+                    }
                 }
             }
             if (ModelState.IsValid)
